@@ -194,16 +194,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // Reset button
-    document.getElementById('reset-button').addEventListener('click', () => {
-        if (confirm('Reset the countdown to today? This will change when the countdown started.')) {
-            startDate = new Date().getTime();
-            localStorage.setItem(STORAGE_KEY, startDate);
-            document.getElementById('last-updated').textContent = 'Now';
-            
-            // Reinitialize with new start date
-            const targetDate = new Date('August 1, 2028 00:00:00').getTime();
-            createWeekBoxes(startDate, targetDate);
-            updateCountdown(startDate, targetDate);
-        }
-    });
+    
 });

@@ -266,21 +266,7 @@ footer {
     color: var(--text-secondary);
 }
 
-#reset-button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.3s, transform 0.2s;
-}
 
-#reset-button:hover {
-    background-color: #2980b9;
-    transform: scale(1.05);
-}
 
 /* Animation for newly added boxes */
 @keyframes fadeIn {
