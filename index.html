@@ -4,7 +4,361 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project K Countdown</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- <link rel="stylesheet" href="styles.css"> -->
+     <style>
+        :root {
+    --primary-color: #3498db;
+    --accent-color: #e74c3c;
+    --background-color: #ffffff;
+    --card-background: #f8f8f8;
+    --text-color: #333333;
+    --text-secondary: #7f8c8d;
+    --filled-gradient-start: #e74c3c;
+    --filled-gradient-end: #f39c12;
+    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --progress-bg: #ecf0f1;
+    --progress-fill: linear-gradient(to right, #3498db, #2ecc71);
+    --week-box-bg: #ecf0f1;
+    --week-box-filled: linear-gradient(135deg, var(--filled-gradient-start), var(--filled-gradient-end));
+    --transition-speed: 0.3s;
+}
+
+.dark-theme {
+    --primary-color: #3498db;
+    --accent-color: #ff6b6b;
+    --background-color: #1a1a2e;
+    --card-background: #16213e;
+    --text-color: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --filled-gradient-start: #ff6b6b;
+    --filled-gradient-end: #ffa502;
+    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    --progress-bg: #2a2a3a;
+    --progress-fill: linear-gradient(to right, #3498db, #2ecc71);
+    --week-box-bg: #2a2a3a;
+    --week-box-filled: linear-gradient(135deg, var(--filled-gradient-start), var(--filled-gradient-end));
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 15px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+}
+
+.container {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    width: 95%;
+    max-width: 900px;
+    max-height: 95vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--primary-color);
+}
+
+#theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+#theme-toggle:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.sun-icon, .moon-icon {
+    position: absolute;
+    transition: opacity 0.3s, transform 0.5s;
+}
+
+.dark-theme .sun-icon {
+    opacity: 1;
+    transform: rotate(0);
+}
+
+.dark-theme .moon-icon {
+    opacity: 0;
+    transform: rotate(90deg);
+}
+
+.sun-icon {
+    opacity: 0;
+    transform: rotate(-90deg);
+}
+
+.moon-icon {
+    opacity: 1;
+    transform: rotate(0);
+}
+
+.countdown-section {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.countdown {
+    font-size: 3rem;
+    font-weight: 700;
+    margin: 0.4rem 0;
+    color: var(--accent-color);
+    transition: transform 0.3s ease;
+}
+
+.countdown:hover {
+    transform: scale(1.05);
+}
+
+.subtitle {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.progress-container {
+    height: 8px;
+    background-color: var(--progress-bg);
+    border-radius: 4px;
+    margin: 1rem 0;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--progress-fill);
+    border-radius: 4px;
+    transition: width 1s ease-in-out;
+}
+
+.weeks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20px, 1fr));
+    gap: 4px;
+    margin: 0.5rem 0;
+    min-height: 0;
+}
+
+.week-box {
+    width: 100%;
+    aspect-ratio: 1/1;
+    background-color: var(--week-box-bg);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.week-box:hover {
+    transform: scale(1.2);
+    z-index: 1;
+}
+
+.week-box.filled {
+    background: var(--week-box-filled);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stat {
+    text-align: center;
+    flex: 1;
+    padding: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.stat:hover {
+    transform: translateY(-5px);
+}
+
+.stat-value {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 5px;
+}
+
+.detailed-stats {
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.time-breakdown {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.time-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-item span:first-child {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.time-item span:last-child {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+
+
+/* Animation for newly added boxes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.week-box-new {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Animation for filled boxes */
+@keyframes fillIn {
+    from {
+        background-position: 200% 0;
+    }
+    to {
+        background-position: 0 0;
+    }
+}
+
+.week-box.filled {
+    background-size: 200% 200%;
+    animation: fillIn 1s ease forwards;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1.2rem;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .countdown {
+        font-size: 2.5rem;
+    }
+    
+    .stats-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .detailed-stats {
+        padding: 0.8rem;
+    }
+    
+    .time-breakdown {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 1.3rem;
+    }
+    
+    .countdown {
+        font-size: 2rem;
+    }
+    
+    .weeks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(18px, 1fr));
+        gap: 3px;
+    }
+    
+    .time-item span:first-child {
+        font-size: 1.1rem;
+    }
+}
+     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -83,6 +437,205 @@
         </footer>
     </div>
     
-    <script src="script.js"></script>
+    <script>
+        // Check for saved start date or create a new one
+const STORAGE_KEY = 'project-k-start-date';
+let startDate;
+
+// Initialize with system preference for dark/light mode
+function initTheme() {
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const savedTheme = localStorage.getItem('theme');
+    
+    if (savedTheme === 'dark' || (savedTheme === null && prefersDarkScheme)) {
+        document.body.classList.add('dark-theme');
+    }
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('theme')) {
+            if (e.matches) {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        }
+    });
+}
+
+// Initialize countdown data
+function initCountdown() {
+    if (localStorage.getItem(STORAGE_KEY)) {
+        startDate = parseInt(localStorage.getItem(STORAGE_KEY));
+        document.getElementById('last-updated').textContent = new Date(startDate).toLocaleDateString();
+    } else {
+        startDate = new Date().getTime();
+        localStorage.setItem(STORAGE_KEY, startDate);
+        document.getElementById('last-updated').textContent = 'Now';
+    }
+    
+    // Set the target date (August 1, 2028)
+    const targetDate = new Date('August 1, 2028 00:00:00').getTime();
+    
+    // Create week boxes with appropriate animations
+    createWeekBoxes(startDate, targetDate);
+    
+    // Do initial update
+    updateCountdown(startDate, targetDate);
+    
+    // Set recurring updates
+    setInterval(() => updateCountdown(startDate, targetDate), 3600000); // Update every hour
+}
+
+// Create the week boxes
+function createWeekBoxes(startDate, targetDate) {
+    const weeksGrid = document.getElementById('weeks-grid');
+    weeksGrid.innerHTML = ''; // Clear existing boxes
+    
+    const totalWeeks = Math.ceil((targetDate - startDate) / (1000 * 60 * 60 * 24 * 7));
+    
+    // Create week boxes with staggered animation
+    for (let i = 0; i < totalWeeks; i++) {
+        const weekBox = document.createElement('div');
+        weekBox.className = 'week-box week-box-new';
+        weekBox.id = `week-${i}`;
+        
+        const weekDate = new Date(startDate + i * 7 * 24 * 60 * 60 * 1000);
+        const formattedDate = weekDate.toLocaleDateString(undefined, { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        
+        weekBox.title = `Week ${i + 1} (${formattedDate})`;
+        weekBox.setAttribute('aria-label', `Week ${i + 1} starting ${formattedDate}`);
+        
+        // Stagger the animations
+        weekBox.style.animationDelay = `${i * 10}ms`;
+        
+        // Add click event to show week details
+        weekBox.addEventListener('click', () => {
+            alert(`Week ${i + 1} (${i+1} of ${totalWeeks})\nStarts: ${formattedDate}`);
+        });
+        
+        weeksGrid.appendChild(weekBox);
+    }
+}
+
+// Update the countdown display
+function updateCountdown(startDate, targetDate) {
+    // Get current date and time
+    const now = new Date().getTime();
+    
+    // Calculate time remaining
+    const timeRemaining = targetDate - now;
+    const timeElapsed = now - startDate;
+    const totalTime = targetDate - startDate;
+    
+    // Calculate weeks
+    const totalWeeks = Math.ceil(totalTime / (1000 * 60 * 60 * 24 * 7));
+    const weeksRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24 * 7));
+    const weeksPassed = totalWeeks - weeksRemaining;
+    
+    // Calculate days
+    const daysRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24));
+    
+    // Calculate years, months, days for detailed breakdown
+    const msPerDay = 1000 * 60 * 60 * 24;
+    const yearsRemaining = Math.floor(timeRemaining / (msPerDay * 365));
+    const monthsRemaining = Math.floor((timeRemaining % (msPerDay * 365)) / (msPerDay * 30));
+    const daysRemainingDetail = Math.floor((timeRemaining % (msPerDay * 30)) / msPerDay);
+    
+    // Calculate percentage with 1 decimal place
+    const percentageCompleted = ((timeElapsed / totalTime) * 100).toFixed(1);
+    
+    // Update the display with smooth animations
+    animateCounter('weeks-count', weeksRemaining);
+    document.getElementById('weeks-passed').textContent = weeksPassed;
+    document.getElementById('days-remaining').textContent = daysRemaining;
+    document.getElementById('percentage').textContent = percentageCompleted + '%';
+    
+    // Update detailed stats
+    document.getElementById('years-remaining').textContent = yearsRemaining;
+    document.getElementById('months-remaining').textContent = monthsRemaining;
+    document.getElementById('days-remaining-detail').textContent = daysRemainingDetail;
+    
+    // Update progress bar
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.style.width = `${percentageCompleted}%`;
+    progressBar.setAttribute('aria-valuenow', percentageCompleted);
+    
+    // Update week boxes
+    for (let i = 0; i < totalWeeks; i++) {
+        const weekBox = document.getElementById(`week-${i}`);
+        if (weekBox) {
+            if (i < weeksPassed) {
+                if (!weekBox.classList.contains('filled')) {
+                    weekBox.classList.add('filled');
+                }
+            } else {
+                weekBox.classList.remove('filled');
+            }
+        }
+    }
+    
+    // If countdown is finished
+    if (timeRemaining < 0) {
+        document.getElementById('weeks-count').textContent = "0";
+        document.getElementById('days-remaining').textContent = "0";
+        document.getElementById('percentage').textContent = "100%";
+        document.getElementById('progress-bar').style.width = "100%";
+        
+        // Fill all boxes
+        for (let i = 0; i < totalWeeks; i++) {
+            const weekBox = document.getElementById(`week-${i}`);
+            if (weekBox) {
+                weekBox.classList.add('filled');
+            }
+        }
+    }
+}
+
+// Animate counter for smooth number transitions
+function animateCounter(id, targetValue) {
+    const element = document.getElementById(id);
+    const startValue = parseInt(element.textContent) || 0;
+    const duration = 500; // ms
+    const startTime = performance.now();
+    
+    function updateValue(timestamp) {
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth animation
+        const easeOutQuad = progress * (2 - progress);
+        
+        const currentValue = Math.round(startValue + (targetValue - startValue) * easeOutQuad);
+        element.textContent = currentValue;
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateValue);
+        }
+    }
+    
+    requestAnimationFrame(updateValue);
+}
+
+// Event Listeners
+document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
+    initCountdown();
+    
+    // Theme toggle
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-theme');
+        const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+        localStorage.setItem('theme', currentTheme);
+    });
+    
+    // Reset button
+    
+});
+    </script>
 </body>
 </html>
