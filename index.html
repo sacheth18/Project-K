@@ -465,14 +465,10 @@ function initTheme() {
 
 // Initialize countdown data
 function initCountdown() {
-    if (localStorage.getItem(STORAGE_KEY)) {
-        startDate = parseInt(localStorage.getItem(STORAGE_KEY));
-        document.getElementById('last-updated').textContent = new Date(startDate).toLocaleDateString();
-    } else {
-        startDate = new Date().getTime();
-        localStorage.setItem(STORAGE_KEY, startDate);
-        document.getElementById('last-updated').textContent = 'Now';
-    }
+    // Fixed start date: April 11, 2025
+startDate = new Date('April 11, 2025 00:00:00').getTime();
+document.getElementById('last-updated').textContent = new Date(startDate).toLocaleDateString();
+
     
     // Set the target date (August 1, 2028)
     const targetDate = new Date('August 1, 2028 00:00:00').getTime();
