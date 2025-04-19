@@ -4,634 +4,627 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project K Countdown</title>
-    <!-- <link rel="stylesheet" href="styles.css"> -->
-     <style>
-        :root {
-    --primary-color: #3498db;
-    --accent-color: #e74c3c;
-    --background-color: #ffffff;
-    --card-background: #f8f8f8;
-    --text-color: #333333;
-    --text-secondary: #7f8c8d;
-    --filled-gradient-start: #e74c3c;
-    --filled-gradient-end: #f39c12;
-    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    --progress-bg: #ecf0f1;
-    --progress-fill: linear-gradient(to right, #3498db, #2ecc71);
-    --week-box-bg: #ecf0f1;
-    --week-box-filled: linear-gradient(135deg, var(--filled-gradient-start), var(--filled-gradient-end));
-    --transition-speed: 0.3s;
-}
-
-.dark-theme {
-    --primary-color: #3498db;
-    --accent-color: #ff6b6b;
-    --background-color: #1a1a2e;
-    --card-background: #16213e;
-    --text-color: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --filled-gradient-start: #ff6b6b;
-    --filled-gradient-end: #ffa502;
-    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    --progress-bg: #2a2a3a;
-    --progress-fill: linear-gradient(to right, #3498db, #2ecc71);
-    --week-box-bg: #2a2a3a;
-    --week-box-filled: linear-gradient(135deg, var(--filled-gradient-start), var(--filled-gradient-end));
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    transition: background-color var(--transition-speed), color var(--transition-speed);
-}
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 15px;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    line-height: 1.5;
-}
-
-.container {
-    background-color: var(--card-background);
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: var(--box-shadow);
-    width: 95%;
-    max-width: 900px;
-    max-height: 95vh;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-h2 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-    color: var(--primary-color);
-}
-
-#theme-toggle {
-    background: none;
-    border: none;
-    color: var(--text-color);
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.2s;
-}
-
-#theme-toggle:hover {
-    background-color: rgba(128, 128, 128, 0.1);
-}
-
-.sun-icon, .moon-icon {
-    position: absolute;
-    transition: opacity 0.3s, transform 0.5s;
-}
-
-.dark-theme .sun-icon {
-    opacity: 1;
-    transform: rotate(0);
-}
-
-.dark-theme .moon-icon {
-    opacity: 0;
-    transform: rotate(90deg);
-}
-
-.sun-icon {
-    opacity: 0;
-    transform: rotate(-90deg);
-}
-
-.moon-icon {
-    opacity: 1;
-    transform: rotate(0);
-}
-
-.countdown-section {
-    text-align: center;
-    margin-bottom: 1rem;
-}
-
-.countdown {
-    font-size: 3rem;
-    font-weight: 700;
-    margin: 0.4rem 0;
-    color: var(--accent-color);
-    transition: transform 0.3s ease;
-}
-
-.countdown:hover {
-    transform: scale(1.05);
-}
-
-.subtitle {
-    margin-bottom: 1rem;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.progress-container {
-    height: 8px;
-    background-color: var(--progress-bg);
-    border-radius: 4px;
-    margin: 1rem 0;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0%;
-    background: var(--progress-fill);
-    border-radius: 4px;
-    transition: width 1s ease-in-out;
-}
-
-.weeks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(20px, 1fr));
-    gap: 4px;
-    margin: 0.5rem 0;
-    min-height: 0;
-}
-
-.week-box {
-    width: 100%;
-    aspect-ratio: 1/1;
-    background-color: var(--week-box-bg);
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.week-box:hover {
-    transform: scale(1.2);
-    z-index: 1;
-}
-
-.week-box.filled {
-    background: var(--week-box-filled);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.stats-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 0.8rem;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.stat {
-    text-align: center;
-    flex: 1;
-    padding: 0.5rem;
-    transition: transform 0.3s ease;
-}
-
-.stat:hover {
-    transform: translateY(-5px);
-}
-
-.stat-value {
-    font-weight: 700;
-    font-size: 1.4rem;
-    color: var(--primary-color);
-}
-
-.stat-label {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    margin-top: 5px;
-}
-
-.detailed-stats {
-    background-color: rgba(255, 255, 255, 0.05);
-    padding: 1rem;
-    border-radius: 8px;
-    margin-top: 1rem;
-}
-
-.time-breakdown {
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-}
-
-.time-item {
-    display: flex;
-    flex-direction: column;
-}
-
-.time-item span:first-child {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.time-item span:last-child {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(128, 128, 128, 0.2);
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-
-
-/* Animation for newly added boxes */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.week-box-new {
-    animation: fadeIn 0.5s ease forwards;
-}
-
-/* Animation for filled boxes */
-@keyframes fillIn {
-    from {
-        background-position: 200% 0;
-    }
-    to {
-        background-position: 0 0;
-    }
-}
-
-.week-box.filled {
-    background-size: 200% 200%;
-    animation: fillIn 1s ease forwards;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .container {
-        padding: 1.2rem;
-    }
-    
-    h1 {
-        font-size: 1.5rem;
-    }
-    
-    .countdown {
-        font-size: 2.5rem;
-    }
-    
-    .stats-container {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .detailed-stats {
-        padding: 0.8rem;
-    }
-    
-    .time-breakdown {
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 1rem;
-    }
-    
-    h1 {
-        font-size: 1.3rem;
-    }
-    
-    .countdown {
-        font-size: 2rem;
-    }
-    
-    .weeks-grid {
-        grid-template-columns: repeat(auto-fill, minmax(18px, 1fr));
-        gap: 3px;
-    }
-    
-    .time-item span:first-child {
-        font-size: 1.1rem;
-    }
-}
-     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Variables --- */
+        :root {
+            --primary: #3498db;
+            --accent: #e74c3c;
+            --bg: #fff;
+            --card: #f8f8f8;
+            --text: #333;
+            --muted: #7f8c8d;
+            --gradient-start: #e74c3c;
+            --gradient-end: #f39c12;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --progress-bg: #ecf0f1;
+            --progress-fill: linear-gradient(to right, var(--primary), #2ecc71);
+            --transition: 0.3s;
+            --border-color: #dcdcdc; /* Added for clarity */
+        }
+
+        .dark-theme {
+            --primary: #5dade2; /* Slightly adjusted primary for dark */
+            --accent: #ff6b6b;
+            --bg: #1a1a2e;
+            --card: #16213e;
+            --text: #e0e0e0;
+            --muted: #a0a0a0; /* Adjusted muted for dark */
+            --gradient-start: #ff6b6b;
+            --gradient-end: #ffa502;
+            --shadow: 0 4px 15px rgba(0,0,0,0.4); /* Enhanced shadow for dark */
+            --progress-bg: #2a2a3a;
+            --border-color: #444; /* Dark border */
+        }
+
+        /* --- Reset & Base --- */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color var(--transition), color var(--transition), border-color var(--transition);
+        }
+
+        body {
+            padding: 15px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* --- Layout --- */
+        .container {
+            background-color: var(--card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            width: 95%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* Increased gap slightly */
+            overflow-y: auto; /* Ensure content scrolls if needed */
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap; /* Allow controls to wrap on small screens */
+            gap: 0.5rem; /* Gap between title and controls */
+            border-bottom: 1px solid var(--border-color); /* Add separator */
+            padding-bottom: 1rem;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; /* Gap between control elements */
+        }
+
+        /* --- Typography --- */
+        h1 {
+            color: var(--primary);
+            font-size: clamp(1.5rem, 4vw, 1.8rem); /* Responsive font size */
+            margin: 0; /* Remove default margin */
+        }
+
+        h2 {
+            margin-bottom: 0.75rem; /* Spacing below section titles */
+            color: var(--primary);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-label, footer {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        /* --- Components --- */
+        /* Removed input[type="date"] styles as it's no longer present */
+        button {
+            font: inherit;
+            color: var(--text);
+            border: 1px solid var(--border-color);
+            background-color: transparent;
+            padding: 0.5rem 1rem;
+            border-radius: 6px; /* Slightly rounder */
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+
+        button:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary);
+            border-color: var(--primary); /* Highlight border on focus */
+        }
+
+        button:hover {
+            background-color: rgba(0,0,0,0.05);
+        }
+        .dark-theme button:hover {
+             background-color: rgba(255,255,255,0.08);
+        }
+
+
+        #theme-toggle {
+            background: none;
+            border: none;
+            position: relative;
+            width: 32px;
+            height: 32px;
+            padding: 0; /* Remove padding for icon button */
+            display: flex; /* Center icon */
+            align-items: center;
+            justify-content: center;
+        }
+        #theme-toggle:hover { background: none; } /* Override general hover */
+
+        .icon {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            /* Removed top/left positioning, relying on flexbox */
+            transition: opacity 0.3s, transform 0.3s;
+            stroke-width: 2px; /* Thicker icon lines */
+        }
+
+        .moon { opacity: 1; transform: rotate(0); }
+        .dark-theme .moon { opacity: 0; transform: rotate(90deg); }
+        .sun { opacity: 0; transform: rotate(-90deg); }
+        .dark-theme .sun { opacity: 1; transform: rotate(0); }
+
+        /* Countdown */
+        .countdown-section { text-align: center; }
+        .countdown {
+            font-size: clamp(2.5rem, 8vw, 3.5rem); /* Responsive font size */
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1.1; /* Adjust line height */
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background-color: var(--progress-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            height: 10px; /* Slightly thicker */
+            margin-top: 0.5rem; /* Space above bar */
+        }
+        .progress-bar {
+            width: 0;
+            height: 100%;
+            background: var(--progress-fill);
+            transition: width 1s ease-in-out;
+        }
+
+        /* Weeks Grid */
+        .weeks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(18px, 1fr)); /* Slightly smaller min size */
+            gap: 4px;
+        }
+        .week-box {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* Maintain aspect ratio */
+            background-color: var(--progress-bg);
+            border-radius: 3px; /* Smaller radius for smaller boxes */
+            cursor: pointer;
+            transition: transform 0.2s ease-out, background-color 0.3s, box-shadow 0.2s;
+        }
+        .week-box.filled {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .dark-theme .week-box.filled {
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+        .week-box:hover {
+            transform: scale(1.25);
+            z-index: 10; /* Bring hovered box to front */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* Enhanced hover shadow */
+        }
+        .week-box.filled:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Stats */
+        .stats-container {
+            display: grid; /* Use grid for better alignment */
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* Responsive columns */
+            gap: 1rem;
+            text-align: center;
+            padding: 1rem 0; /* Add some vertical padding */
+            border-top: 1px solid var(--border-color); /* Separator */
+            border-bottom: 1px solid var(--border-color); /* Separator */
+        }
+        .stat-value {
+            font-size: clamp(1.2rem, 4vw, 1.5rem); /* Responsive */
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1.2;
+        }
+
+        /* Detailed Stats / Breakdown */
+        .detailed-stats {
+            background-color: rgba(128, 128, 128, 0.05); /* Use neutral overlay */
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        .dark-theme .detailed-stats {
+             background-color: rgba(255, 255, 255, 0.05);
+        }
+        .time-breakdown {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap; /* Allow wrapping */
+            gap: 1rem; /* Add gap for wrapping */
+        }
+        .time-item { text-align: center; }
+        .time-item span:first-child {
+            display: block;
+            font-size: 1.4rem;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        .time-item span:last-child {
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-transform: uppercase; /* Style unit labels */
+            letter-spacing: 0.5px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: right;
+            margin-top: 1rem; /* Add space above footer */
+        }
+
+        /* --- Accessibility --- */
+        .visually-hidden {
+          clip: rect(0 0 0 0);
+          clip-path: inset(50%);
+          height: 1px;
+          overflow: hidden;
+          position: absolute;
+          white-space: nowrap;
+          width: 1px;
+        }
+
+
+        /* --- Media Queries --- */
+        @media(max-width: 480px) {
+            .container { padding: 1rem; gap: 1rem; }
+            header { flex-direction: column; align-items: flex-start; }
+            .controls { width: 100%; justify-content: flex-end; } /* Align theme toggle right */
+            button { padding: 0.4rem 0.8rem; }
+            .weeks-grid { gap: 3px; grid-template-columns: repeat(auto-fill, minmax(15px, 1fr)); }
+            .stats-container { grid-template-columns: repeat(2, 1fr); } /* 2 columns on small screens */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Project K</h1>
-            <button id="theme-toggle" aria-label="Toggle dark mode">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="sun-icon">
-                    <circle cx="12" cy="12" r="5"></circle>
-                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="moon-icon">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                </svg>
-            </button>
-        </header>
-        
-        <div class="countdown-section">
-            <div class="countdown" id="weeks-count" aria-live="polite">Calculating...</div>
-            <div class="subtitle">Weeks remaining until August 1, 2028</div>
-            
-            <div class="progress-container">
-                <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+            <div class="controls">
+                <button id="theme-toggle" aria-label="Toggle theme">
+                    <svg class="icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <svg class="icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
             </div>
-        </div>
-        
-        <div class="weeks-grid" id="weeks-grid" aria-label="Visual representation of weeks passed and remaining">
-            <!-- Weeks boxes will be generated by JavaScript -->
-        </div>
-        
-        <div class="stats-container">
+        </header>
+
+        <section class="countdown-section" aria-labelledby="countdown-heading">
+            <h2 id="countdown-heading" class="visually-hidden">Time Remaining</h2>
+            <div class="countdown" id="weeks-count" aria-live="polite">—</div>
+            <div class="subtitle">Weeks from April 11, 2025 until Aug 1, 2028</div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"
+                     role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+            </div>
+        </section>
+
+        <section class="weeks-visualizer" aria-label="Weeks passed versus remaining visual grid">
+             <h2 class="visually-hidden">Weekly Progress Grid</h2>
+            <div class="weeks-grid" id="weeks-grid"></div>
+        </section>
+
+        <section class="stats-container" aria-label="Progress Statistics">
+             <h2 class="visually-hidden">Progress Statistics</h2>
             <div class="stat">
-                <div class="stat-value" id="weeks-passed">0</div>
+                <div class="stat-value" id="weeks-passed" aria-live="polite">—</div>
                 <div class="stat-label">Weeks Passed</div>
             </div>
             <div class="stat">
-                <div class="stat-value" id="days-remaining">0</div>
+                <div class="stat-value" id="days-passed" aria-live="polite">—</div>
+                <div class="stat-label">Days Passed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="days-remaining" aria-live="polite">—</div>
                 <div class="stat-label">Days Remaining</div>
             </div>
             <div class="stat">
-                <div class="stat-value" id="percentage">0%</div>
+                <div class="stat-value" id="percentage" aria-live="polite">—%</div>
                 <div class="stat-label">Completed</div>
             </div>
-        </div>
-        
-        <div class="detailed-stats">
-            <h2>Time Breakdown</h2>
+        </section>
+
+        <section class="detailed-stats" aria-labelledby="breakdown-heading">
+            <h2 id="breakdown-heading">Remaining Time Breakdown</h2>
             <div class="time-breakdown">
                 <div class="time-item">
-                    <span id="years-remaining">0</span>
-                    <span>years</span>
+                    <span id="yrs-rem" aria-live="polite">0</span><span>years</span>
                 </div>
                 <div class="time-item">
-                    <span id="months-remaining">0</span>
-                    <span>months</span>
+                    <span id="mos-rem" aria-live="polite">0</span><span>months</span>
                 </div>
                 <div class="time-item">
-                    <span id="days-remaining-detail">0</span>
-                    <span>days</span>
+                    <span id="dys-rem" aria-live="polite">0</span><span>days</span>
                 </div>
             </div>
-        </div>
-        
+        </section>
+
         <footer>
-            
-            <p>Last updated: <span id="last-updated">Now</span></p>
+            Last updated: <time id="last-updated" datetime="">—</time>
         </footer>
     </div>
-    
+
     <script>
-        // Check for saved start date or create a new one
-const STORAGE_KEY = 'project-k-start-date';
-let startDate;
+        (function() {
+            // --- Constants ---
+            // STORAGE_KEY_START_DATE removed
+            const STORAGE_KEY_THEME = 'project-k-theme';
+            const FIXED_START_DATE = '2025-04-11T00:00:00'; // Fixed start date
+            const TARGET_DATE = new Date('2028-08-01T00:00:00');
+            const MS_PER_DAY = 1000 * 60 * 60 * 24;
+            const MS_PER_WEEK = MS_PER_DAY * 7;
+            const UPDATE_INTERVAL_MS = 60 * 1000; // Update every minute
 
-// Initialize with system preference for dark/light mode
-function initTheme() {
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const savedTheme = localStorage.getItem('theme');
-    
-    if (savedTheme === 'dark' || (savedTheme === null && prefersDarkScheme)) {
-        document.body.classList.add('dark-theme');
-    }
-    
-    // Listen for system theme changes
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        if (!localStorage.getItem('theme')) {
-            if (e.matches) {
-                document.body.classList.add('dark-theme');
-            } else {
-                document.body.classList.remove('dark-theme');
-            }
-        }
-    });
-}
+            // --- State ---
+            let startDate; // Will be set to the fixed date
+            let intervalId = null; // To store the interval timer
 
-// Initialize countdown data
-function initCountdown() {
-    // Fixed start date: April 11, 2025
-startDate = new Date('April 11, 2025 00:00:00').getTime();
-document.getElementById('last-updated').textContent = new Date(startDate).toLocaleDateString();
+            // --- DOM Element References ---
+            const elements = {
+                // startDatePicker reference removed
+                themeToggleButton: document.getElementById('theme-toggle'),
+                weeksCount: document.getElementById('weeks-count'),
+                weeksPassed: document.getElementById('weeks-passed'),
+                daysPassed: document.getElementById('days-passed'),
+                daysRemaining: document.getElementById('days-remaining'),
+                percentage: document.getElementById('percentage'),
+                yearsRemaining: document.getElementById('yrs-rem'),
+                monthsRemaining: document.getElementById('mos-rem'),
+                daysPartRemaining: document.getElementById('dys-rem'), // Renamed for clarity
+                progressBar: document.getElementById('progress-bar'),
+                lastUpdated: document.getElementById('last-updated'),
+                weeksGrid: document.getElementById('weeks-grid')
+            };
 
-    
-    // Set the target date (August 1, 2028)
-    const targetDate = new Date('August 1, 2028 00:00:00').getTime();
-    
-    // Create week boxes with appropriate animations
-    createWeekBoxes(startDate, targetDate);
-    
-    // Do initial update
-    updateCountdown(startDate, targetDate);
-    
-    // Set recurring updates
-    setInterval(() => updateCountdown(startDate, targetDate), 3600000); // Update every hour
-}
+            // --- LocalStorage Helper (only used for theme now) ---
+            const storage = {
+                get: (key) => {
+                    try {
+                        return localStorage.getItem(key);
+                    } catch (e) {
+                        console.error("LocalStorage read error:", e);
+                        return null;
+                    }
+                },
+                set: (key, value) => {
+                    try {
+                        localStorage.setItem(key, value);
+                    } catch (e) {
+                        console.error("LocalStorage write error:", e);
+                    }
+                },
+                // remove function might not be needed anymore unless theme reset is added
+                // remove: (key) => {
+                //     try {
+                //         localStorage.removeItem(key);
+                //     } catch (e) {
+                //         console.error("LocalStorage remove error:", e);
+                //     }
+                // }
+            };
 
-// Create the week boxes
-function createWeekBoxes(startDate, targetDate) {
-    const weeksGrid = document.getElementById('weeks-grid');
-    weeksGrid.innerHTML = ''; // Clear existing boxes
-    
-    const totalWeeks = Math.ceil((targetDate - startDate) / (1000 * 60 * 60 * 24 * 7));
-    
-    // Create week boxes with staggered animation
-    for (let i = 0; i < totalWeeks; i++) {
-        const weekBox = document.createElement('div');
-        weekBox.className = 'week-box week-box-new';
-        weekBox.id = `week-${i}`;
-        
-        const weekDate = new Date(startDate + i * 7 * 24 * 60 * 60 * 1000);
-        const formattedDate = weekDate.toLocaleDateString(undefined, { 
-            year: 'numeric', 
-            month: 'short', 
-            day: 'numeric' 
-        });
-        
-        weekBox.title = `Week ${i + 1} (${formattedDate})`;
-        weekBox.setAttribute('aria-label', `Week ${i + 1} starting ${formattedDate}`);
-        
-        // Stagger the animations
-        weekBox.style.animationDelay = `${i * 10}ms`;
-        
-        // Add click event to show week details
-        weekBox.addEventListener('click', () => {
-            alert(`Week ${i + 1} (${i+1} of ${totalWeeks})\nStarts: ${formattedDate}`);
-        });
-        
-        weeksGrid.appendChild(weekBox);
-    }
-}
+            // --- Initialization Functions ---
 
-// Update the countdown display
-function updateCountdown(startDate, targetDate) {
-    // Get current date and time
-    const now = new Date().getTime();
-    
-    // Calculate time remaining
-    const timeRemaining = targetDate - now;
-    const timeElapsed = now - startDate;
-    const totalTime = targetDate - startDate;
-    
-    // Calculate weeks
-    const totalWeeks = Math.ceil(totalTime / (1000 * 60 * 60 * 24 * 7));
-    const weeksRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24 * 7));
-    const weeksPassed = totalWeeks - weeksRemaining;
-    
-    // Calculate days
-    const daysRemaining = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24));
-    
-    // Calculate years, months, days for detailed breakdown
-    const msPerDay = 1000 * 60 * 60 * 24;
-    const yearsRemaining = Math.floor(timeRemaining / (msPerDay * 365));
-    const monthsRemaining = Math.floor((timeRemaining % (msPerDay * 365)) / (msPerDay * 30));
-    const daysRemainingDetail = Math.floor((timeRemaining % (msPerDay * 30)) / msPerDay);
-    
-    // Calculate percentage with 1 decimal place
-    const percentageCompleted = ((timeElapsed / totalTime) * 100).toFixed(1);
-    
-    // Update the display with smooth animations
-    animateCounter('weeks-count', weeksRemaining);
-    document.getElementById('weeks-passed').textContent = weeksPassed;
-    document.getElementById('days-remaining').textContent = daysRemaining;
-    document.getElementById('percentage').textContent = percentageCompleted + '%';
-    
-    // Update detailed stats
-    document.getElementById('years-remaining').textContent = yearsRemaining;
-    document.getElementById('months-remaining').textContent = monthsRemaining;
-    document.getElementById('days-remaining-detail').textContent = daysRemainingDetail;
-    
-    // Update progress bar
-    const progressBar = document.getElementById('progress-bar');
-    progressBar.style.width = `${percentageCompleted}%`;
-    progressBar.setAttribute('aria-valuenow', percentageCompleted);
-    
-    // Update week boxes
-    for (let i = 0; i < totalWeeks; i++) {
-        const weekBox = document.getElementById(`week-${i}`);
-        if (weekBox) {
-            if (i < weeksPassed) {
-                if (!weekBox.classList.contains('filled')) {
-                    weekBox.classList.add('filled');
+            /**
+             * Sets the fixed start date.
+             */
+            function loadStartDate() {
+                startDate = new Date(FIXED_START_DATE);
+                // No need to check localStorage or set input value
+                if (isNaN(startDate.getTime())) {
+                     console.error("Invalid FIXED_START_DATE constant:", FIXED_START_DATE);
+                     // Fallback or error handling needed if the constant is wrong
+                     startDate = new Date(); // Use today as a fallback?
                 }
-            } else {
-                weekBox.classList.remove('filled');
             }
-        }
-    }
-    
-    // If countdown is finished
-    if (timeRemaining < 0) {
-        document.getElementById('weeks-count').textContent = "0";
-        document.getElementById('days-remaining').textContent = "0";
-        document.getElementById('percentage').textContent = "100%";
-        document.getElementById('progress-bar').style.width = "100%";
-        
-        // Fill all boxes
-        for (let i = 0; i < totalWeeks; i++) {
-            const weekBox = document.getElementById(`week-${i}`);
-            if (weekBox) {
-                weekBox.classList.add('filled');
+
+            /**
+             * Initializes the theme based on localStorage or system preference.
+             */
+            function initializeTheme() {
+                const savedTheme = storage.get(STORAGE_KEY_THEME);
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const useDarkTheme = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+                document.body.classList.toggle('dark-theme', useDarkTheme);
             }
-        }
-    }
-}
 
-// Animate counter for smooth number transitions
-function animateCounter(id, targetValue) {
-    const element = document.getElementById(id);
-    const startValue = parseInt(element.textContent) || 0;
-    const duration = 500; // ms
-    const startTime = performance.now();
-    
-    function updateValue(timestamp) {
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Easing function for smooth animation
-        const easeOutQuad = progress * (2 - progress);
-        
-        const currentValue = Math.round(startValue + (targetValue - startValue) * easeOutQuad);
-        element.textContent = currentValue;
-        
-        if (progress < 1) {
-            requestAnimationFrame(updateValue);
-        }
-    }
-    
-    requestAnimationFrame(updateValue);
-}
+            // --- UI Update Functions ---
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
-    initCountdown();
-    
-    // Theme toggle
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-        document.body.classList.toggle('dark-theme');
-        const currentTheme = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
-        localStorage.setItem('theme', currentTheme);
-    });
-    
-    // Reset button
-    
-});
+            /**
+             * Builds the grid of week boxes based on the fixed start and target dates.
+             */
+            function buildWeeksGrid() {
+                elements.weeksGrid.innerHTML = ''; // Clear existing grid
+                // Ensure start date is loaded before building grid
+                if (!startDate || isNaN(startDate.getTime())) {
+                    console.error("Start date not loaded correctly for buildWeeksGrid.");
+                    return;
+                }
+
+                const totalDurationMs = TARGET_DATE - startDate;
+                if (totalDurationMs <= 0) {
+                    console.warn("Target date is before or on the fixed start date.");
+                    return; // Don't build grid if duration is non-positive
+                }
+
+                const totalWeeks = Math.ceil(totalDurationMs / MS_PER_WEEK);
+                const fragment = document.createDocumentFragment(); // Use fragment for performance
+
+                for (let i = 0; i < totalWeeks; i++) {
+                    const box = document.createElement('div');
+                    box.className = 'week-box';
+                    box.dataset.weekIndex = i; // Store index
+
+                    // Calculate the start date of this specific week
+                    const weekStartDate = new Date(startDate.getTime() + i * MS_PER_WEEK);
+                    const weekEndDate = new Date(weekStartDate.getTime() + 6 * MS_PER_DAY); // End of the week
+
+                    // Set title for hover/tooltip
+                    box.title = `Week ${i + 1} (${weekStartDate.toLocaleDateString()} - ${weekEndDate.toLocaleDateString()})`;
+
+                    // Add click listener (consider replacing alert with a tooltip later)
+                    box.addEventListener('click', () => {
+                         // Using alert for simplicity, replace with a custom tooltip if desired
+                         alert(box.title);
+                    });
+
+                    fragment.appendChild(box);
+                }
+                elements.weeksGrid.appendChild(fragment);
+            }
+
+            /**
+             * Updates all dynamic text content, progress bar, and week box fills.
+             */
+            function updateDisplay() {
+                const now = new Date();
+
+                // Ensure dates are valid before proceeding
+                if (isNaN(startDate.getTime()) || isNaN(TARGET_DATE.getTime())) {
+                    console.error("Invalid start or target date for calculations.");
+                    return;
+                }
+
+                // --- Calculations ---
+                const totalDurationMs = TARGET_DATE - startDate;
+                const elapsedMs = now - startDate;
+                const remainingMs = Math.max(0, TARGET_DATE - now); // Don't go negative
+
+                // Check for invalid duration (should not happen with fixed date unless target is before start)
+                if (totalDurationMs <= 0) {
+                     console.warn("Start date is on or after target date.");
+                     // Display completion state
+                     elements.weeksCount.textContent = '0';
+                     elements.weeksPassed.textContent = Math.ceil(Math.abs(totalDurationMs) / MS_PER_WEEK).toString(); // Total weeks
+                     elements.daysPassed.textContent = Math.ceil(Math.abs(totalDurationMs) / MS_PER_DAY).toString(); // Total days
+                     elements.daysRemaining.textContent = '0';
+                     elements.percentage.textContent = '100.0%';
+                     elements.yearsRemaining.textContent = '0';
+                     elements.monthsRemaining.textContent = '0';
+                     elements.daysPartRemaining.textContent = '0';
+                     elements.progressBar.style.width = '100%';
+                     elements.progressBar.setAttribute('aria-valuenow', '100');
+
+                     document.querySelectorAll('.week-box').forEach(box => {
+                        box.classList.add('filled');
+                     });
+
+                    const nowFormatted = now.toLocaleString();
+                    elements.lastUpdated.textContent = nowFormatted;
+                    elements.lastUpdated.dateTime = now.toISOString();
+                     return; // Stop further calculation
+                }
+
+
+                // Basic time units
+                const totalWeeks = Math.ceil(totalDurationMs / MS_PER_WEEK);
+                const weeksRemaining = Math.max(0, Math.ceil(remainingMs / MS_PER_WEEK));
+                const weeksPassed = Math.max(0, Math.floor(elapsedMs / MS_PER_WEEK));
+                const daysRemaining = Math.max(0, Math.ceil(remainingMs / MS_PER_DAY));
+                const daysPassed = Math.max(0, Math.floor(elapsedMs / MS_PER_DAY));
+                const percentageComplete = Math.min(100, Math.max(0, (elapsedMs / totalDurationMs * 100)));
+
+                // Remaining time breakdown (approximate months)
+                let tempRemainingMs = remainingMs;
+                const yearsRem = Math.floor(tempRemainingMs / (MS_PER_DAY * 365.25));
+                tempRemainingMs %= (MS_PER_DAY * 365.25);
+                const monthsRem = Math.floor(tempRemainingMs / (MS_PER_DAY * 30.44));
+                tempRemainingMs %= (MS_PER_DAY * 30.44);
+                const daysRemPart = Math.floor(tempRemainingMs / MS_PER_DAY);
+
+                // --- Update DOM ---
+                elements.weeksCount.textContent = weeksRemaining;
+                elements.weeksPassed.textContent = weeksPassed;
+                elements.daysPassed.textContent = daysPassed;
+                elements.daysRemaining.textContent = daysRemaining;
+                elements.percentage.textContent = percentageComplete.toFixed(1) + '%';
+
+                elements.yearsRemaining.textContent = yearsRem;
+                elements.monthsRemaining.textContent = monthsRem;
+                elements.daysPartRemaining.textContent = daysRemPart;
+
+                const nowFormatted = now.toLocaleString();
+                elements.lastUpdated.textContent = nowFormatted;
+                elements.lastUpdated.dateTime = now.toISOString(); // Set machine-readable time
+
+                // Update Progress Bar
+                elements.progressBar.style.width = percentageComplete + '%';
+                elements.progressBar.setAttribute('aria-valuenow', percentageComplete.toFixed(1));
+
+                // Update Week Box Fills
+                document.querySelectorAll('.week-box').forEach(box => {
+                    const index = parseInt(box.dataset.weekIndex, 10);
+                    box.classList.toggle('filled', index < weeksPassed);
+                });
+            }
+
+            // --- Event Handlers ---
+
+            /**
+             * Handles changes to the start date picker.
+             * (This function is no longer needed or called)
+             */
+            // function handleStartDateChange(event) { ... }
+
+
+            /**
+             * Toggles the theme and saves the preference.
+             */
+            function handleThemeToggle() {
+                const isDark = document.body.classList.toggle('dark-theme');
+                storage.set(STORAGE_KEY_THEME, isDark ? 'dark' : 'light');
+            }
+
+            /**
+             * Central function to load data and refresh the UI.
+             */
+            function runUpdates() {
+                 loadStartDate(); // Sets the fixed start date
+                 buildWeeksGrid();
+                 updateDisplay(); // Run once immediately
+            }
+
+
+            // --- Execution ---
+
+            // Add event listeners
+            // Event listener for date picker removed
+            elements.themeToggleButton.addEventListener('click', handleThemeToggle);
+
+            // Initial setup
+            initializeTheme();
+            runUpdates(); // Load data, build grid, and update display initially
+
+            // Set interval for periodic updates
+            if (intervalId) clearInterval(intervalId); // Clear any existing interval
+            intervalId = setInterval(updateDisplay, UPDATE_INTERVAL_MS);
+
+        })(); // IIFE ends
     </script>
 </body>
 </html>
